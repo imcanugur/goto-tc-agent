@@ -90,11 +90,19 @@ func startAgent(target string, tunnel string) {
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Fatal("Kullanım: agent <targetURL>")
+		log.Fatal("Kullanım: agent <targetPort|targetURL>")
 	}
 
-	target := os.Args[1]
-	tunnel := fmt.Sprintf("demo-%d", time.Now().Unix()%10000)
+	input := os.Args[1]
+	var target string
+
+	if !strings.Contains(input, "://") {
+		target = "http://127.0.0.1:" + input
+	} else {
+		target = strings.TrimRight(input, "/")
+	}
+
+	tunnel := fmt.Sprintf("%d-agent", time.Now().Unix()/10000)
 
 	startAgent(target, tunnel)
 }
